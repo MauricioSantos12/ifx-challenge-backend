@@ -1,0 +1,143 @@
+# IFX Challenge Backend
+
+API RESTful para gestión de Máquinas Virtuales construida con Express + Node.js.
+
+## Requisitos
+
+- Node.js >= 18
+- MySQL >= 8
+
+## Instalación
+
+```bash
+git clone <repo-url>
+cd ifx-challenge-backend
+npm install
+```
+
+## Configuración
+
+Crear un archivo `.env` en la raíz del proyecto:
+
+```env
+JWT_SECRET=tu_clave_secreta
+PORT=4000
+DB_HOST=localhost
+DB_PORT=3306
+DB_USER=root
+DB_PASSWORD=root
+DB_NAME=ifx_challenge_ms
+```
+
+## Base de Datos
+
+```bash
+# Crear la base de datos manualmente en MySQL
+CREATE DATABASE ifx_challenge_ms;
+
+# Ejecutar migraciones
+npm run migrate
+
+# Ejecutar seed (usuarios iniciales)
+npm run seed
+```
+
+## Ejecución
+
+```bash
+# Desarrollo
+npm run dev
+
+# Producción
+npm start
+```
+
+## Documentación API (Swagger)
+
+Una vez iniciado el servidor, acceder a:
+
+```
+http://localhost:4000/api-docs
+```
+
+## Endpoints
+
+### Auth
+
+| Método | Ruta | Descripción | Acceso |
+|--------|------|-------------|--------|
+| POST | `/api/v1/login` | Iniciar sesión | Público |
+| POST | `/api/v1/logout` | Cerrar sesión | Público |
+
+### Usuarios
+
+| Método | Ruta | Descripción | Acceso |
+|--------|------|-------------|--------|
+| GET | `/api/v1/users` | Listar usuarios | Admin |
+| GET | `/api/v1/users/:id` | Obtener usuario | Admin |
+| POST | `/api/v1/users` | Crear usuario | Admin |
+| PUT | `/api/v1/users/:id` | Actualizar usuario | Admin |
+| DELETE | `/api/v1/users/:id` | Eliminar usuario | Admin |
+
+### Máquinas Virtuales
+
+| Método | Ruta | Descripción | Acceso |
+|--------|------|-------------|--------|
+| GET | `/api/v1/vms` | Listar VMs activas | Admin, Cliente |
+| GET | `/api/v1/vms/:id` | Obtener VM por ID | Admin, Cliente |
+| POST | `/api/v1/vms` | Crear VM | Admin |
+| PUT | `/api/v1/vms/:id` | Actualizar VM | Admin |
+| DELETE | `/api/v1/vms/:id` | Eliminar VM (soft delete) | Admin |
+
+## Usuarios Seed
+
+| Email | Password | Rol |
+|-------|----------|-----|
+| admin@ifx.com | Admin123! | Admin |
+| cliente@ifx.com | Cliente123! | Cliente |
+
+## Estructura del Proyecto
+
+```
+src/
+├── controllers/    # Manejo de requests/responses
+├── services/       # Lógica de negocio
+├── models/         # Conexión a base de datos (Knex)
+├── middlewares/    # Auth, validación, errores
+├── routes/         # Definición de rutas
+├── utils/          # Validadores, swagger config
+└── index.js        # Entry point
+migrations/         # Migraciones de base de datos
+seeds/              # Datos iniciales
+```
+
+## Scripts Disponibles
+
+| Script | Descripción |
+|--------|-------------|
+| `npm run dev` | Inicia con nodemon (hot reload) |
+| `npm start` | Inicia en producción |
+| `npm run migrate` | Ejecuta migraciones |
+| `npm run migrate:rollback` | Revierte última migración |
+| `npm run seed` | Inserta datos iniciales |
+| `npm run lint` | Ejecuta ESLint |
+| `npm run lint:fix` | Corrige errores de lint |
+
+## Seguridad
+
+- JWT almacenado en cookie HttpOnly (no accesible desde JS del cliente)
+- Helmet para headers de seguridad
+- Rate limiting para prevenir abuso
+- Validación de inputs con Zod
+- Passwords hasheados con bcrypt
+- CORS configurado con credentials
+
+## Tecnologías
+
+- Express
+- Knex.js (query builder)
+- MySQL2
+- JSON Web Tokens
+- Zod (validación)
+- Swagger (documentación)
+- Helmet, CORS, Rate Limit
