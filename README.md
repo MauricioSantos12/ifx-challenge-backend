@@ -10,7 +10,7 @@ API RESTful para gestión de Máquinas Virtuales construida con Express + Node.j
 ## Instalación
 
 ```bash
-git clone <repo-url>
+git clone https://github.com/MauricioSantos12/ifx-challenge-backend.git
 cd ifx-challenge-backend
 npm install
 ```
