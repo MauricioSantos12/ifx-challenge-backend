@@ -1,8 +1,8 @@
-const { v4: uuidv4 } = require("uuid");
+const crypto = require("crypto");
 const db = require("../models/data");
 
 async function create(data) {
-  const id = uuidv4();
+  const id = crypto.randomUUID();
   await db("vms").insert({ id, ...data, isDeleted: false });
   return db("vms").where({ id }).first();
 }

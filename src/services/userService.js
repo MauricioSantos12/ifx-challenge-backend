@@ -1,9 +1,9 @@
-const { v4: uuidv4 } = require('uuid');
+const crypto = require('crypto');
 const bcrypt = require('bcryptjs');
 const db = require('../models/data');
 
 async function create(data) {
-  const id = uuidv4();
+  const id = crypto.randomUUID();
   const password = bcrypt.hashSync(data.password, 10);
   await db('users').insert({ id, ...data, password });
   return db('users').where({ id }).select('id', 'email', 'role', 'created_at', 'updated_at').first();
