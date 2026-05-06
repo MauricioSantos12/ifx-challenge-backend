@@ -5,7 +5,7 @@ API RESTful para gestión de Máquinas Virtuales construida con Express + Node.j
 ## Requisitos
 
 - Node.js >= 18
-- MySQL >= 8
+- Docker (para la base de datos)
 
 ## Instalación
 
@@ -29,11 +29,11 @@ DB_PASSWORD=root
 DB_NAME=ifx_challenge_ms
 ```
 
-## Base de Datos
+## Base de Datos (Docker)
 
 ```bash
-# Crear la base de datos manualmente en MySQL
-CREATE DATABASE ifx_challenge_ms;
+# Levantar MySQL con Docker
+docker compose up -d
 
 # Ejecutar migraciones
 npm run migrate
@@ -109,6 +109,7 @@ src/
 └── index.js        # Entry point
 migrations/         # Migraciones de base de datos
 seeds/              # Datos iniciales
+docker-compose.yml  # Contenedor MySQL
 ```
 
 ## Scripts Disponibles
@@ -137,7 +138,12 @@ seeds/              # Datos iniciales
 - Express
 - Knex.js (query builder)
 - MySQL2
+- Docker
 - JSON Web Tokens
 - Zod (validación)
 - Swagger (documentación)
 - Helmet, CORS, Rate Limit
+
+## Modelo de IA
+
+Este proyecto fue desarrollado con asistencia de **Amazon Q Developer** (Claude Sonnet, by Anthropic), utilizado como copiloto de desarrollo dentro del IDE mediante el plugin de Amazon Q.
