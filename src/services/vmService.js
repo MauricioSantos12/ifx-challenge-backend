@@ -1,10 +1,22 @@
 const crypto = require("crypto");
 const db = require("../models/data");
 
+let io;
+
+function setIo(ioInstance) {
+  io = ioInstance;
+}
+
+function emit(event, payload) {
+  if (io) io.emit(event, payload);
+}
+
 async function create(data) {
   const id = crypto.randomUUID();
   await db("vms").insert({ id, ...data, isDeleted: false });
-  return db("vms").where({ id }).first();
+  const vm = await db("vms").where({ id }).first();
+  emit("vm:created", vm);
+  return vm;
 }
 
 function findAll() {
@@ -21,7 +33,9 @@ async function update(id, data) {
   await db("vms")
     .where({ id })
     .update({ ...data, updated_at: db.fn.now() });
-  return db("vms").where({ id }).first();
+  const updated = await db("vms").where({ id }).first();
+  emit("vm:updated", updated);
+  return updated;
 }
 
 async function softDelete(id) {
@@ -30,7 +44,8 @@ async function softDelete(id) {
   await db("vms")
     .where({ id })
     .update({ isDeleted: true, updated_at: db.fn.now() });
+  emit("vm:deleted", { id });
   return true;
 }
 
-module.exports = { create, findAll, findById, update, softDelete };
+module.exports = { create, findAll, findById, update, softDelete, setIo };

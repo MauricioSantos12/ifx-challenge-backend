@@ -1,6 +1,6 @@
 # IFX Challenge Backend
 
-API RESTful para gestión de Máquinas Virtuales construida con Express + Node.js.
+API RESTful para gestión de Máquinas Virtuales construida con Express + Node.js, con actualizaciones en tiempo real mediante WebSockets.
 
 ## Requisitos
 
@@ -38,7 +38,7 @@ docker compose up -d
 # Ejecutar migraciones
 npm run migrate
 
-# Ejecutar seed (usuarios iniciales)
+# Ejecutar seed (usuarios iniciales + VMs de ejemplo)
 npm run seed
 ```
 
@@ -89,6 +89,18 @@ http://localhost:4000/api-docs
 | PUT | `/api/v1/vms/:id` | Actualizar VM | Admin |
 | DELETE | `/api/v1/vms/:id` | Eliminar VM (soft delete) | Admin |
 
+## WebSockets (Socket.io)
+
+El servidor emite eventos en tiempo real cuando hay cambios en las VMs. El frontend puede escuchar estos eventos para actualizar la UI sin necesidad de polling.
+
+### Eventos emitidos
+
+| Evento | Payload | Descripción |
+|--------|---------|-------------|
+| `vm:created` | `{ id, name, cores, ram, disk, os, status, ... }` | Se creó una nueva VM |
+| `vm:updated` | `{ id, name, cores, ram, disk, os, status, ... }` | Se actualizó una VM |
+| `vm:deleted` | `{ id }` | Se eliminó una VM (soft delete) |
+
 ## Usuarios Seed
 
 | Email | Password | Rol |
@@ -101,12 +113,12 @@ http://localhost:4000/api-docs
 ```
 src/
 ├── controllers/    # Manejo de requests/responses
-├── services/       # Lógica de negocio
+├── services/       # Lógica de negocio + emisión de eventos
 ├── models/         # Conexión a base de datos (Knex)
 ├── middlewares/    # Auth, validación, errores
 ├── routes/         # Definición de rutas
 ├── utils/          # Validadores, swagger config
-└── index.js        # Entry point
+└── index.js        # Entry point + configuración Socket.io
 migrations/         # Migraciones de base de datos
 seeds/              # Datos iniciales
 docker-compose.yml  # Contenedor MySQL
@@ -136,6 +148,7 @@ docker-compose.yml  # Contenedor MySQL
 ## Tecnologías
 
 - Express
+- Socket.io (WebSockets)
 - Knex.js (query builder)
 - MySQL2
 - Docker
@@ -147,3 +160,10 @@ docker-compose.yml  # Contenedor MySQL
 ## Modelo de IA
 
 Este proyecto fue desarrollado con asistencia de **Amazon Q Developer** (Claude Sonnet, by Anthropic), utilizado como copiloto de desarrollo dentro del IDE mediante el plugin de Amazon Q.
+
+### Uso del modelo en el proyecto
+
+- **Arquitectura y estructura**: Diseño de la estructura de carpetas y separación de responsabilidades (controllers, services, models, middlewares)
+- **Autenticación y seguridad**: Configuración de JWT en cookies HttpOnly, middlewares de auth
+- **WebSockets**: Implementación de Socket.io para notificaciones en tiempo real
+- **Documentación**: Configuración de Swagger y generación del README
